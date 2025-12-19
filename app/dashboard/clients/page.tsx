@@ -2,86 +2,135 @@
 
 import Link from "next/link";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const clients = [
-    { id: 1, company: "Acme Corp", status: "active", plan: "Pro", price: "$99", connectedAt: "2024-01-15" },
-    { id: 2, company: "Globex LLC", status: "paused", plan: "Basic", price: "$29", connectedAt: "2023-11-02" },
-    { id: 3, company: "Umbrella Inc", status: "active", plan: "Enterprise", price: "$199", connectedAt: "2024-06-10" },
+  { id: 1, company: "Acme Corp", status: "active", plan: "Pro", price: "$99", connectedAt: "2024-01-15" },
+  { id: 2, company: "Globex LLC", status: "paused", plan: "Basic", price: "$29", connectedAt: "2023-11-02" },
+  { id: 3, company: "Umbrella Inc", status: "active", plan: "Enterprise", price: "$199", connectedAt: "2024-06-10" },
 ];
 
 export default function ClientsPage() {
-    const isLoading = false;
+  const isLoading = false;
 
-    return (
-        <div className="p-6 w-full">
-            <h1 className="text-2xl font-semibold mb-4">B2B Clients</h1>
+  return (
+    <div className="p-6 w-full">
+      <h1 className="text-2xl font-semibold mb-4">B2B Clients</h1>
 
-            <Table className="w-full">
-                <TableHeader>
-                    <TableRow className="bg-gray-100 dark:bg-gray-800">
-                        <TableHead>Company</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Plan</TableHead>
-                        <TableHead>Monthly Price</TableHead>
-                        <TableHead>Connected Date</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
+      {/* 🔍 FILTERS (UI ONLY) */}
+      <div className="flex flex-wrap gap-4 mb-4 items-center">
+        <Input
+          placeholder="Search by company..."
+          className="w-[250px]"
+        />
 
-                <TableBody>
-                    {isLoading
-                        ? Array.from({ length: 3 }).map((_, idx) => (
-                            <TableRow key={idx}>
-                                <TableCell><div className="h-4 w-24 bg-gray-300 rounded animate-pulse" /></TableCell>
-                                <TableCell><div className="h-4 w-16 bg-gray-300 rounded animate-pulse" /></TableCell>
-                                <TableCell><div className="h-4 w-16 bg-gray-300 rounded animate-pulse" /></TableCell>
-                                <TableCell><div className="h-4 w-16 bg-gray-300 rounded animate-pulse" /></TableCell>
-                                <TableCell><div className="h-4 w-20 bg-gray-300 rounded animate-pulse" /></TableCell>
-                                <TableCell><div className="h-8 w-20 bg-gray-300 rounded animate-pulse ml-auto" /></TableCell>
-                            </TableRow>
-                        ))
-                        : clients.map(client => (
-                            <TableRow key={client.id}>
-                                <TableCell className="font-medium text-blue-600 hover:underline">
-                                    <Link href={`/dashboard/clients/${client.id}`}>{client.company}</Link>
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant={client.status === "active" ? "default" : "secondary"}>
-                                        {client.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>{client.plan}</TableCell>
-                                <TableCell>{client.price}</TableCell>
-                                <TableCell>{client.connectedAt}</TableCell>
-                                <TableCell className="text-right pr-0">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button size="sm" variant="outline">Actions</Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem className="text-red-500">Pause</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                </TableBody>
-            </Table>
-        </div>
-    );
+        <Select>
+          <SelectTrigger className="w-[150px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="paused">Paused</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Connected Date</SelectItem>
+            <SelectItem value="price">Monthly Price</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Button variant="outline">Apply</Button>
+      </div>
+
+      {/* 📊 TABLE */}
+      <Table className="w-full">
+        <TableHeader>
+          <TableRow className="bg-gray-100 dark:bg-gray-800">
+            <TableHead>Company</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Plan</TableHead>
+            <TableHead>Monthly Price</TableHead>
+            <TableHead>Connected Date</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, idx) => (
+                <TableRow key={idx}>
+                  <TableCell><div className="h-4 w-24 bg-gray-300 rounded animate-pulse" /></TableCell>
+                  <TableCell><div className="h-4 w-16 bg-gray-300 rounded animate-pulse" /></TableCell>
+                  <TableCell><div className="h-4 w-16 bg-gray-300 rounded animate-pulse" /></TableCell>
+                  <TableCell><div className="h-4 w-16 bg-gray-300 rounded animate-pulse" /></TableCell>
+                  <TableCell><div className="h-4 w-20 bg-gray-300 rounded animate-pulse" /></TableCell>
+                  <TableCell><div className="h-8 w-20 bg-gray-300 rounded animate-pulse ml-auto" /></TableCell>
+                </TableRow>
+              ))
+            : clients.map(client => (
+                <TableRow key={client.id}>
+                  <TableCell className="font-medium text-blue-600 hover:underline">
+                    <Link href={`/dashboard/clients/${client.id}`}>
+                      {client.company}
+                    </Link>
+                  </TableCell>
+
+                  <TableCell>
+                    <Badge variant={client.status === "active" ? "default" : "secondary"}>
+                      {client.status}
+                    </Badge>
+                  </TableCell>
+
+                  <TableCell>{client.plan}</TableCell>
+                  <TableCell>{client.price}</TableCell>
+                  <TableCell>{client.connectedAt}</TableCell>
+
+                  <TableCell className="text-right pr-0">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm" variant="outline">
+                          Actions
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem className="text-red-500">
+                          Pause
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 }
